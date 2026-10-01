@@ -11,5 +11,6 @@ public class PerceptronTest {
         int countSignals = 10;
         perceptron.createSignal(10);
         assertEquals(countSignals, perceptron.getSignals().length);
+        assertEquals(countSignals, perceptron.getWeights().length);
     }
 }

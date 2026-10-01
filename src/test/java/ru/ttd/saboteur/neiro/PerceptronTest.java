@@ -6,18 +6,19 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PerceptronTest {
-    Perceptrom perceptron = new Perceptrom();
+    public static final int COUNT_SIGNALS = 10;
+    Perceptron perceptron = new Perceptron();
 
     @BeforeEach
     void before(){
-        perceptron.createSignal(10);
+        perceptron.createSignal(COUNT_SIGNALS);
     }
 
     @Test
     void createInputTest(){
-        int countSignals = 10;
-        assertEquals(countSignals, perceptron.getSignals().length);
-        assertEquals(countSignals, perceptron.getWeights().length);
+
+        assertEquals(COUNT_SIGNALS, perceptron.getSignals().length);
+        assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
 
     @Test

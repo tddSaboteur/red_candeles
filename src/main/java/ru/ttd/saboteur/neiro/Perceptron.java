@@ -1,6 +1,6 @@
 package ru.ttd.saboteur.neiro;
 
-public class Perceptrom {
+public class Perceptron {
     private double[] signals;
     private double[] weight;
 

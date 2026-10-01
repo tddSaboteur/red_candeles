@@ -13,4 +13,9 @@ public class PerceptronTest {
         assertEquals(countSignals, perceptron.getSignals().length);
         assertEquals(countSignals, perceptron.getWeights().length);
     }
+
+    @Test
+    void calculateTest(){
+        perceptron.calculate();
+    }
 }

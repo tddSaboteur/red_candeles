@@ -16,7 +16,6 @@ public class PerceptronTest {
 
     @Test
     void createInputTest(){
-
         assertEquals(COUNT_SIGNALS, perceptron.getSignals().length);
         assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
@@ -24,5 +23,19 @@ public class PerceptronTest {
     @Test
     void calculateTest(){
         assertEquals(0,perceptron.calculate());
+    }
+
+    @Test
+    void initWeightRandomValue(){
+        final int[] count = {0};
+        Perceptron perceptron = new Perceptron(){
+            @Override
+            double getRandomValue(){
+                count[0] +=1;
+                return 1.0;
+            }
+        };
+        perceptron.createSignal(COUNT_SIGNALS);
+        assertEquals(count[0],COUNT_SIGNALS);
     }
 }

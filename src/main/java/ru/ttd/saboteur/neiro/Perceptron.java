@@ -24,4 +24,8 @@ public class Perceptron {
         }
         return summ;
     }
+
+    double getRandomValue(){
+        return Math.random();
+    }
 }

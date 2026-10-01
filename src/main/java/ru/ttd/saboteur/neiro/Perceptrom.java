@@ -16,4 +16,12 @@ public class Perceptrom {
     public double[] getWeights() {
         return weight;
     }
+
+    public double calculate() {
+        double summ = 0.0;
+        for (int i = 0; i < signals.length; i++) {
+            summ += signals[i] * weight[i];
+        }
+        return summ;
+    }
 }

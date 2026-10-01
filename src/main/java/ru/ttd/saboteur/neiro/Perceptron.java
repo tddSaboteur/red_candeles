@@ -7,6 +7,13 @@ public class Perceptron {
     public void createSignal(int countSignals) {
         signals = new double[countSignals];
         weight = new double[countSignals];
+        initWeight();
+    }
+
+    private void initWeight() {
+        for (int i = 0; i < weight.length; i++) {
+            weight[i] = getRandomValue();
+        }
     }
 
     public double[] getSignals() {

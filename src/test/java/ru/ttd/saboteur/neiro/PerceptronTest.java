@@ -3,10 +3,16 @@ package ru.ttd.saboteur.neiro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -15,23 +21,38 @@ public class PerceptronTest {
 
     @Mock
     WeightGenerator weightGenerator;
+    @Mock
+    ActivateFunction activateFunction;
+
     Perceptron perceptron;
+
+    public static Stream<double[]> providedInputs() {
+        return Stream.of(
+                new double[]{1,1},
+                new double[]{2,2}
+        );
+    }
 
     @BeforeEach
     void before(){
-        perceptron = new Perceptron(weightGenerator);
+        perceptron = new Perceptron(weightGenerator,activateFunction);
     }
 
     @Test
     void createInputTest(){
         perceptron.createSignal(COUNT_SIGNALS);
-        assertEquals(COUNT_SIGNALS, perceptron.getSignals().length);
         assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
 
-    @Test
-    void calculateTest(){
-        assertEquals(0,perceptron.calculate());
+    @ParameterizedTest
+    @MethodSource("providedInputs")
+    void calculateTest(double[] inputs){
+        when(weightGenerator.getRandomValue()).thenReturn(1.0);
+        when(activateFunction.activate(anyDouble())).thenReturn(1.0);
+        perceptron.createSignal(2);
+
+        assertEquals(1,perceptron.calculate(inputs));
+        verify(activateFunction, times(1)).activate(anyDouble());
     }
 
     @Test

@@ -3,6 +3,11 @@ package ru.ttd.saboteur.neiro;
 public class Perceptron {
     private double[] signals;
     private double[] weight;
+    private final WeightGenerator weightGenerator;
+
+    public Perceptron(WeightGenerator weightGenerator) {
+        this.weightGenerator = weightGenerator;
+    }
 
     public void createSignal(int countSignals) {
         signals = new double[countSignals];
@@ -12,7 +17,7 @@ public class Perceptron {
 
     private void initWeight() {
         for (int i = 0; i < weight.length; i++) {
-            weight[i] = getRandomValue();
+            weight[i] = weightGenerator.getRandomValue();
         }
     }
 
@@ -30,9 +35,5 @@ public class Perceptron {
             summ += signals[i] * weight[i];
         }
         return summ;
-    }
-
-    double getRandomValue(){
-        return Math.random();
     }
 }

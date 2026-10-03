@@ -2,20 +2,29 @@ package ru.ttd.saboteur.neiro;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class PerceptronTest {
     public static final int COUNT_SIGNALS = 10;
-    Perceptron perceptron = new Perceptron();
+
+    @Mock
+    WeightGenerator weightGenerator;
+    Perceptron perceptron;
 
     @BeforeEach
     void before(){
-        perceptron.createSignal(COUNT_SIGNALS);
+        perceptron = new Perceptron(weightGenerator);
     }
 
     @Test
     void createInputTest(){
+        perceptron.createSignal(COUNT_SIGNALS);
         assertEquals(COUNT_SIGNALS, perceptron.getSignals().length);
         assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
@@ -27,15 +36,8 @@ public class PerceptronTest {
 
     @Test
     void initWeightRandomValue(){
-        final int[] count = {0};
-        Perceptron perceptron = new Perceptron(){
-            @Override
-            double getRandomValue(){
-                count[0] +=1;
-                return 1.0;
-            }
-        };
+        when(weightGenerator.getRandomValue()).thenReturn(1.0);
         perceptron.createSignal(COUNT_SIGNALS);
-        assertEquals(count[0],COUNT_SIGNALS);
+        verify(weightGenerator,times(COUNT_SIGNALS)).getRandomValue();
     }
 }

@@ -3,10 +3,10 @@ package ru.ttd.saboteur.neiro;
 public class Perceptron {
    private double[] weight;
     private final WeightGenerator weightGenerator;
-    private final ActivateFunction activateFunction;
-    public Perceptron(WeightGenerator weightGenerator, ActivateFunction activateFunction) {
+    private final ActivationFunction activationFunction;
+    public Perceptron(WeightGenerator weightGenerator, ActivationFunction activationFunction) {
         this.weightGenerator = weightGenerator;
-        this.activateFunction = activateFunction;
+        this.activationFunction = activationFunction;
     }
 
     public void createSignal(int countSignals) {
@@ -25,10 +25,15 @@ public class Perceptron {
     }
 
     public double calculate(double[] signals) {
+        double summ = calculateSignals(signals);
+        return activationFunction.activate(summ);
+    }
+
+    private double calculateSignals(double[] signals) {
         double summ = 0.0;
         for (int i = 0; i < signals.length; i++) {
             summ += signals[i] * weight[i];
         }
-        return activateFunction.activate(summ);
+        return summ;
     }
 }

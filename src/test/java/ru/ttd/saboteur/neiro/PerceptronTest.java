@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +20,7 @@ public class PerceptronTest {
     @Mock
     WeightGenerator weightGenerator;
     @Mock
-    ActivateFunction activateFunction;
+    ActivationFunction activationFunction;
 
     Perceptron perceptron;
 
@@ -35,7 +33,7 @@ public class PerceptronTest {
 
     @BeforeEach
     void before(){
-        perceptron = new Perceptron(weightGenerator,activateFunction);
+        perceptron = new Perceptron(weightGenerator, activationFunction);
     }
 
     @Test
@@ -48,11 +46,11 @@ public class PerceptronTest {
     @MethodSource("providedInputs")
     void calculateTest(double[] inputs){
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
-        when(activateFunction.activate(anyDouble())).thenReturn(1.0);
+        when(activationFunction.activate(anyDouble())).thenReturn(1.0);
         perceptron.createSignal(2);
 
         assertEquals(1,perceptron.calculate(inputs));
-        verify(activateFunction, times(1)).activate(anyDouble());
+        verify(activationFunction, times(1)).activate(anyDouble());
     }
 
     @Test

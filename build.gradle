@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'ru.ttd.sabotur'
+group = 'ru.ttd.saboteur'
 version = '1.0'
 
 repositories {

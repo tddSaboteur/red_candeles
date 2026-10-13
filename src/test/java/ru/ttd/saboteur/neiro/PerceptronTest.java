@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,10 +25,10 @@ public class PerceptronTest {
 
     Perceptron perceptron;
 
-    public static Stream<double[]> providedInputs() {
+    public static Stream<Arguments> providedInputs() {
         return Stream.of(
-                new double[]{1,1},
-                new double[]{2,2}
+                Arguments.of(new double[]{1,1},2),
+                Arguments.of(new double[]{2,2},4)
         );
     }
 
@@ -44,9 +45,9 @@ public class PerceptronTest {
 
     @ParameterizedTest
     @MethodSource("providedInputs")
-    void calculateTest(double[] inputs){
+    void calculateTest(double[] inputs,double expected){
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
-        when(activationFunction.activate(anyDouble())).thenReturn(1.0);
+        when(activationFunction.activate(expected)).thenReturn(1.0);
         perceptron.createSignal(2);
 
         assertEquals(1,perceptron.calculate(inputs));

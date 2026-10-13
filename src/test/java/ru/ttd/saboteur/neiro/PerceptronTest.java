@@ -21,7 +21,7 @@ public class PerceptronTest {
     @Mock
     WeightGenerator weightGenerator;
     @Mock
-    ActivationFunction activationFunction;
+    ReluActivationFunction activationFunction;
 
     Perceptron perceptron;
 

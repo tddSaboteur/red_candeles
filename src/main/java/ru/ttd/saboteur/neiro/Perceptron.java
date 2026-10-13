@@ -3,8 +3,8 @@ package ru.ttd.saboteur.neiro;
 public class Perceptron {
    private double[] weight;
     private final WeightGenerator weightGenerator;
-    private final ActivationFunction activationFunction;
-    public Perceptron(WeightGenerator weightGenerator, ActivationFunction activationFunction) {
+    private final ReluActivationFunction activationFunction;
+    public Perceptron(WeightGenerator weightGenerator, ReluActivationFunction activationFunction) {
         this.weightGenerator = weightGenerator;
         this.activationFunction = activationFunction;
     }

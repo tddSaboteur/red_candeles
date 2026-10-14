@@ -64,13 +64,18 @@ public class PerceptronTest {
     void updateWeightsTest(){
         double learningRate = 0.1;
         double[] inputs = {1,1};
-        double error = 1-0.5;
         double actual = 1;
 
         when(weightGenerator.getRandomValue()).thenReturn(0.5);
         when(activationFunction.activate(1*0.5+1*0.5)).thenReturn(0.5);
-        when(activationFunction.drivative(0.5)).thenReturn(0.5);
+        when(activationFunction.derivative(1d)).thenReturn(0.5);
 
-        perceptron.updateWeights(inputs,error,learningRate);
+        perceptron.createSignal(inputs.length);
+        double error = actual-perceptron.calculate(inputs);
+
+        perceptron.updateWeights(inputs,error,learningRate,actual);
+        double expected = 0.5 + (error * learningRate * 0.5 * 1);
+
+        assertEquals(expected,perceptron.getWeights()[0]);
     }
 }

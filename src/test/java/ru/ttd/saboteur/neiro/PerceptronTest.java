@@ -27,55 +27,58 @@ public class PerceptronTest {
 
     public static Stream<Arguments> providedInputs() {
         return Stream.of(
-                Arguments.of(new double[]{1,1},2),
-                Arguments.of(new double[]{2,2},4)
+                Arguments.of(new double[]{1, 1}, 2),
+                Arguments.of(new double[]{2, 2}, 4)
         );
     }
 
     @BeforeEach
-    void before(){
+    void before() {
         perceptron = new Perceptron(weightGenerator, activationFunction);
     }
 
     @Test
-    void createInputTest(){
+    void createInputTest() {
         perceptron.createSignal(COUNT_SIGNALS);
         assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
 
     @ParameterizedTest
     @MethodSource("providedInputs")
-    void calculateTest(double[] inputs,double expected){
+    void calculateTest(double[] inputs, double expected) {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
         when(activationFunction.activate(expected)).thenReturn(1.0);
         perceptron.createSignal(2);
 
-        assertEquals(1,perceptron.calculate(inputs));
+        assertEquals(1, perceptron.calculate(inputs));
         verify(activationFunction, times(1)).activate(anyDouble());
     }
 
     @Test
-    void initWeightRandomValue(){
+    void initWeightRandomValue() {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
         perceptron.createSignal(COUNT_SIGNALS);
-        verify(weightGenerator,times(COUNT_SIGNALS)).getRandomValue();
+        verify(weightGenerator, times(COUNT_SIGNALS)).getRandomValue();
     }
+
     @Test
-    void updateWeightsTest(){
+    void updateWeightsTest() {
         double learningRate = 0.1;
-        double[] inputs = {1,1};
+        double[] inputs = {1, 1};
         double actual = 1;
 
         when(weightGenerator.getRandomValue()).thenReturn(0.5);
-        when(activationFunction.activate(1*0.5+1*0.5)).thenReturn(0.5);
-        when(activationFunction.derivative(1d)).thenReturn(0.5);
+        when(activationFunction.activate(1 * 0.5 + 1 * 0.5)).thenReturn(0.5);
+        when(activationFunction.derivative(1)).thenReturn(0.5);
 
         perceptron.createSignal(inputs.length);
-        double error = actual-perceptron.calculate(inputs);
+        double result = perceptron.calculate(inputs);
+        double error = actual - result;
 
-        perceptron.updateWeights(inputs,error,learningRate,actual);
+        perceptron.updateWeights(inputs, error, learningRate);
         double expected = 0.5 + (error * learningRate * 0.5 * 1);
 
-        assertEquals(expected,perceptron.getWeights()[0]);
+        assertEquals(expected, perceptron.getWeights()[0]);
+        assertEquals(expected, perceptron.getWeights()[1]);
     }
 }

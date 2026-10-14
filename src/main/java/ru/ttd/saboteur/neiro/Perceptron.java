@@ -37,14 +37,8 @@ public class Perceptron {
         return summ;
     }
 
-    /*
-            текущий вес += Ошибка *
-                       скорость обучения *
-                       производная функции активации выходящего значения *
-                       входящее значение.
-     */
-    public void updateWeights(double[] inputs, double error, double learningRate, double predication) {
-        double deltaWeight = error * learningRate * activationFunction.derivative(predication);
+    public void updateWeights(double[] inputs, double error, double learningRate) {
+        double deltaWeight = error * learningRate * activationFunction.derivative(calculateSignals(inputs));
         for (int i = 0; i < weight.length; i++) {
             weight[i] += deltaWeight * inputs[i];
         }

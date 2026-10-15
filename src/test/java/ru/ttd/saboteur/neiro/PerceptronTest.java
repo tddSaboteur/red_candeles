@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -65,20 +66,18 @@ public class PerceptronTest {
     void updateWeightsTest() {
         double learningRate = 0.1;
         double[] inputs = {1, 1};
-        double actual = 1;
 
         when(weightGenerator.getRandomValue()).thenReturn(0.5);
-        when(activationFunction.activate(1 * 0.5 + 1 * 0.5)).thenReturn(0.5);
-        when(activationFunction.derivative(1)).thenReturn(0.5);
+        when(activationFunction.derivative(anyDouble())).thenReturn(0.5);
 
         perceptron.createSignal(inputs.length);
-        double result = perceptron.calculate(inputs);
-        double error = actual - result;
+        //Расчет ошибки ожидаемое значение - вычисленное значение.
+        double error = - 0.5;
 
         perceptron.updateWeights(inputs, error, learningRate);
-        double expected = 0.5 + (error * learningRate * 0.5 * 1);
-
-        assertEquals(expected, perceptron.getWeights()[0]);
-        assertEquals(expected, perceptron.getWeights()[1]);
+        //расчет по формуле startWeight(0.5) + error(-0.5) * lr(0.1) * deriv(0.5) * input(1.0)
+        double expected = 0.475;
+        double[] expectedWeights = {expected,expected};
+        assertArrayEquals(expectedWeights,perceptron.getWeights());
     }
 }

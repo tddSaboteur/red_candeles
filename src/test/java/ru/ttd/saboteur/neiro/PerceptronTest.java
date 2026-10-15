@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -62,22 +63,37 @@ public class PerceptronTest {
         verify(weightGenerator, times(COUNT_SIGNALS)).getRandomValue();
     }
 
-    @Test
-    void updateWeightsTest() {
-        double learningRate = 0.1;
-        double[] inputs = {1, 1};
+    @ParameterizedTest
+    @CsvSource({
+            "0.5, 0.5, 1.0, 1.0, -0.5, 0.1, 0.475, 0.475, 0.5",
+            //тест разные входы и веса, отрицательная ошибка
+            "0.3, 0.7, 2.0, 4.0, -0.5, 0.1, 0.25, 0.60,   0.5",
+            //нулевой learning rate веса не должны меняться
+            "0.5, 0.5, 1.0, 1.0, -0.5, 0.0, 0.5,  0.5,    0.5",
+            //нулевой вход конкретный вес не меняется
+            "0.4, 0.6, 0.0, 5.0, 0.4,  0.2, 0.4,  0.8,    0.5",
+            //нулевая ошибка
+            "0.2, 0.8, 9.0, 2.5, 0.0,  0.1, 0.2,  0.8,    0.5"
+    })
+    void updateWeightsTest(double startWeight1,
+                           double startWeight2,
+                           double in1,
+                           double in2,
+                           double error,
+                           double learningRate,
+                           double expectedW1,
+                           double expectedW2,
+                           double deriv) {
+        double[] inputs = {in1, in2};
 
-        when(weightGenerator.getRandomValue()).thenReturn(0.5);
-        when(activationFunction.derivative(anyDouble())).thenReturn(0.5);
+        when(weightGenerator.getRandomValue()).thenReturn(startWeight1, startWeight2);
+        when(activationFunction.derivative(anyDouble())).thenReturn(deriv);
 
         perceptron.createSignal(inputs.length);
-        //Расчет ошибки ожидаемое значение - вычисленное значение.
-        double error = - 0.5;
 
         perceptron.updateWeights(inputs, error, learningRate);
-        //расчет по формуле startWeight(0.5) + error(-0.5) * lr(0.1) * deriv(0.5) * input(1.0)
-        double expected = 0.475;
-        double[] expectedWeights = {expected,expected};
-        assertArrayEquals(expectedWeights,perceptron.getWeights());
+
+        double[] expectedWeights = {expectedW1, expectedW2};
+        assertArrayEquals(expectedWeights, perceptron.getWeights());
     }
 }

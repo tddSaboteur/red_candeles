@@ -27,4 +27,11 @@ class ReluActivationFunctionTest {
         double result = reluActivationFunction.activate(x);
         assertEquals(x,result);
     }
+
+    @Test
+    void derivative_inputPositive_shouldReturnOne(){
+        double expected = 1;
+        double input = 0.435;
+        assertEquals(expected, reluActivationFunction.derivative(input));
+    }
 }

@@ -34,4 +34,10 @@ class ReluActivationFunctionTest {
         double input = 0.435;
         assertEquals(expected, reluActivationFunction.derivative(input));
     }
+    @Test
+    void derivative_inputNegative_shouldReturnZero(){
+        double expected = 0;
+        double input = - 0.435;
+        assertEquals(expected, reluActivationFunction.derivative(input));
+    }
 }

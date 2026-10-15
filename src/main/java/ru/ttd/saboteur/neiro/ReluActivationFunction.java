@@ -5,7 +5,7 @@ public class ReluActivationFunction {
         return Math.max(0,input);
     }
 
-    public double derivative(double output) {
-        return 0;
+    public double derivative(double WeightedSum) {
+        return WeightedSum > 0 ? 1.0 : 0;
     }
 }

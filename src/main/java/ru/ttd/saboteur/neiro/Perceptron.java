@@ -3,8 +3,8 @@ package ru.ttd.saboteur.neiro;
 public class Perceptron {
    private double[] weight;
     private final WeightGenerator weightGenerator;
-    private final ActivationFunction activationFunction;
-    public Perceptron(WeightGenerator weightGenerator, ActivationFunction activationFunction) {
+    private final ReluActivationFunction activationFunction;
+    public Perceptron(WeightGenerator weightGenerator, ReluActivationFunction activationFunction) {
         this.weightGenerator = weightGenerator;
         this.activationFunction = activationFunction;
     }
@@ -35,5 +35,12 @@ public class Perceptron {
             summ += signals[i] * weight[i];
         }
         return summ;
+    }
+
+    public void updateWeights(double[] inputs, double error, double learningRate) {
+        double deltaWeight = error * learningRate * activationFunction.derivative(calculateSignals(inputs));
+        for (int i = 0; i < weight.length; i++) {
+            weight[i] += deltaWeight * inputs[i];
+        }
     }
 }

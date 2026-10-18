@@ -4,12 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -20,43 +23,77 @@ public class PerceptronTest {
     @Mock
     WeightGenerator weightGenerator;
     @Mock
-    ActivationFunction activationFunction;
+    ReluActivationFunction activationFunction;
 
     Perceptron perceptron;
 
-    public static Stream<double[]> providedInputs() {
+    public static Stream<Arguments> providedInputs() {
         return Stream.of(
-                new double[]{1,1},
-                new double[]{2,2}
+                Arguments.of(new double[]{1, 1}, 2),
+                Arguments.of(new double[]{2, 2}, 4)
         );
     }
 
     @BeforeEach
-    void before(){
+    void before() {
         perceptron = new Perceptron(weightGenerator, activationFunction);
     }
 
     @Test
-    void createInputTest(){
+    void createInputTest() {
         perceptron.createSignal(COUNT_SIGNALS);
         assertEquals(COUNT_SIGNALS, perceptron.getWeights().length);
     }
 
     @ParameterizedTest
     @MethodSource("providedInputs")
-    void calculateTest(double[] inputs){
+    void calculateTest(double[] inputs, double expected) {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
-        when(activationFunction.activate(anyDouble())).thenReturn(1.0);
+        when(activationFunction.activate(expected)).thenReturn(1.0);
         perceptron.createSignal(2);
 
-        assertEquals(1,perceptron.calculate(inputs));
+        assertEquals(1, perceptron.calculate(inputs));
         verify(activationFunction, times(1)).activate(anyDouble());
     }
 
     @Test
-    void initWeightRandomValue(){
+    void initWeightRandomValue() {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
         perceptron.createSignal(COUNT_SIGNALS);
-        verify(weightGenerator,times(COUNT_SIGNALS)).getRandomValue();
+        verify(weightGenerator, times(COUNT_SIGNALS)).getRandomValue();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0.5, 0.5, 1.0, 1.0, -0.5, 0.1, 0.475, 0.475, 0.5",
+            //тест разные входы и веса, отрицательная ошибка
+            "0.3, 0.7, 2.0, 4.0, -0.5, 0.1, 0.25, 0.60,   0.5",
+            //нулевой learning rate веса не должны меняться
+            "0.5, 0.5, 1.0, 1.0, -0.5, 0.0, 0.5,  0.5,    0.5",
+            //нулевой вход конкретный вес не меняется
+            "0.4, 0.6, 0.0, 5.0, 0.4,  0.2, 0.4,  0.8,    0.5",
+            //нулевая ошибка
+            "0.2, 0.8, 9.0, 2.5, 0.0,  0.1, 0.2,  0.8,    0.5"
+    })
+    void updateWeightsTest(double startWeight1,
+                           double startWeight2,
+                           double in1,
+                           double in2,
+                           double error,
+                           double learningRate,
+                           double expectedW1,
+                           double expectedW2,
+                           double deriv) {
+        double[] inputs = {in1, in2};
+
+        when(weightGenerator.getRandomValue()).thenReturn(startWeight1, startWeight2);
+        when(activationFunction.derivative(anyDouble())).thenReturn(deriv);
+
+        perceptron.createSignal(inputs.length);
+
+        perceptron.updateWeights(inputs, error, learningRate);
+
+        double[] expectedWeights = {expectedW1, expectedW2};
+        assertArrayEquals(expectedWeights, perceptron.getWeights());
     }
 }

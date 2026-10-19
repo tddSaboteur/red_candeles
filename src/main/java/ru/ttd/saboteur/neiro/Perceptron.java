@@ -1,10 +1,13 @@
 package ru.ttd.saboteur.neiro;
 
+import ru.ttd.saboteur.neiro.activation.ActivationFunction;
+import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
+
 public class Perceptron {
    private double[] weight;
     private final WeightGenerator weightGenerator;
-    private final ReluActivationFunction activationFunction;
-    public Perceptron(WeightGenerator weightGenerator, ReluActivationFunction activationFunction) {
+    private final ActivationFunction activationFunction;
+    public Perceptron(WeightGenerator weightGenerator, ActivationFunction activationFunction) {
         this.weightGenerator = weightGenerator;
         this.activationFunction = activationFunction;
     }

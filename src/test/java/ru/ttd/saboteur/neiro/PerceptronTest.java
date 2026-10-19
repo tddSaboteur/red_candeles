@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.ttd.saboteur.neiro.activation.ActivationFunction;
+import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
 
 import java.util.stream.Stream;
 
@@ -23,7 +25,7 @@ public class PerceptronTest {
     @Mock
     WeightGenerator weightGenerator;
     @Mock
-    ReluActivationFunction activationFunction;
+    ActivationFunction activationFunction;
 
     Perceptron perceptron;
 

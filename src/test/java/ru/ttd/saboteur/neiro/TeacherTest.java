@@ -21,15 +21,15 @@ public class TeacherTest {
     void trainSpike() {
         when(weightGenerator.getRandomValue()).thenReturn(0.5);
         Perceptron perceptron = new Perceptron(weightGenerator, reluActivationFunction);
-        double bias = 1;
+
         double[][] dataset = {
-                {bias, 1, 1},
-                {bias, 1, 0},
-                {bias, 0, 1},
-                {bias, 0, 0}
+                {1, 1},
+                {1, 0},
+                {0, 1},
+                {0, 0}
         };
         double[] actual = {1, 0, 0, 0};
-        perceptron.createSignal(3);
+        perceptron.createSignal(2);
         double learningRate = 0.01;
         int epoch = 10000;
         double accuaracy = 0.00001;

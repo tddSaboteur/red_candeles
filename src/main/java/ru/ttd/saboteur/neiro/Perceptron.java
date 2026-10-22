@@ -4,16 +4,18 @@ import ru.ttd.saboteur.neiro.activation.ActivationFunction;
 import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
 
 public class Perceptron {
-   private double[] weight;
+    private double[] weight;
+    private static final double bias = 1;
     private final WeightGenerator weightGenerator;
     private final ActivationFunction activationFunction;
+
     public Perceptron(WeightGenerator weightGenerator, ActivationFunction activationFunction) {
         this.weightGenerator = weightGenerator;
         this.activationFunction = activationFunction;
     }
 
     public void createSignal(int countSignals) {
-        weight = new double[countSignals];
+        weight = new double[countSignals + 1];
         initWeight();
     }
 
@@ -34,16 +36,19 @@ public class Perceptron {
 
     private double calculateSignals(double[] signals) {
         double summ = 0.0;
+        summ += bias * weight[0];
         for (int i = 0; i < signals.length; i++) {
-            summ += signals[i] * weight[i];
+            summ += signals[i] * weight[i + 1];
         }
         return summ;
     }
 
     public void updateWeights(double[] inputs, double error, double learningRate) {
         double deltaWeight = error * learningRate * activationFunction.derivative(calculateSignals(inputs));
-        for (int i = 0; i < weight.length; i++) {
-            weight[i] += deltaWeight * inputs[i];
+        weight[0] += deltaWeight * bias;
+
+        for (int i = 0; i < inputs.length; i++) {
+            weight[i+1] += deltaWeight * inputs[i];
         }
     }
 }

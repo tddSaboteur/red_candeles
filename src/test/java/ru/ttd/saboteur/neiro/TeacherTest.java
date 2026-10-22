@@ -1,27 +1,36 @@
 package ru.ttd.saboteur.neiro;
 
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ttd.saboteur.neiro.activation.ActivationFunction;
-import ru.ttd.saboteur.neiro.activation.LeakyReluActivationFunction;
 import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
 
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TeacherTest {
-    @Mock
-    WeightGenerator weightGenerator;
+
+    WeightGenerator weightGenerator = new WeightGenerator();
     ActivationFunction reluActivationFunction = new ReluActivationFunction();
+    double learningRate;
+    int epoch;
+    double accuracy;
+    Perceptron perceptron;
+
+    @BeforeEach
+    void before() {
+        weightGenerator = new WeightGenerator();
+        reluActivationFunction = new ReluActivationFunction();
+        learningRate = 0.01;
+        epoch = 10_000;
+        accuracy = 0.00001;
+        perceptron = new Perceptron(weightGenerator, reluActivationFunction);
+
+    }
 
     @Test
-    void trainSpike() {
-        when(weightGenerator.getRandomValue()).thenReturn(0.5);
-        Perceptron perceptron = new Perceptron(weightGenerator, reluActivationFunction);
-
+    void trainSpikeAnd() {
         double[][] dataset = {
                 {1, 1},
                 {1, 0},
@@ -29,42 +38,42 @@ public class TeacherTest {
                 {0, 0}
         };
         double[] actual = {1, 0, 0, 0};
-        perceptron.createSignal(2);
-        double learningRate = 0.01;
-        int epoch = 10000;
-        double accuaracy = 0.00001;
+        perceptron.createSignal(dataset[0].length);
 
-        for (int i = 0; i < epoch; i++) {
-            System.out.println("epoch:" + i);
-            double symError = 0;
-            for (int j = 0; j < dataset.length; j++) {
-                double[] data = dataset[j];
-                double result = perceptron.calculate(data);
-                double error = actual[j] - result;
-                symError += error;
-
-
-                perceptron.updateWeights(data, error, learningRate);
-            }
-            double meanError = (symError/4);
-            System.out.println("ERROR:" + meanError);
-            if (meanError < accuaracy && meanError > accuaracy*-1){
-                System.out.println("Final training! Epoch"+i);
-                break;
-            }
-        }
+        train(dataset, actual);
 
         for (int i = 0; i < dataset.length; i++) {
             double[] data = dataset[i];
             System.out.println("index:" + i + " result:" + perceptron.calculate(data));
         }
     }
-    /*
 
-    bias = 1; e 10000 lr = 0.01;af= RL
-      index:0 result:0.9999999872548376
-      index:1 result:8.741393497935235E-9
-      index:2 result:8.8502539741242E-9
-      index:3 result:0.0
-    */
+    private void train(double[][] dataset, double[] actual) {
+
+        for (int i = 0; i < epoch; i++) {
+
+            double meanError = oneTry(dataset, actual) / dataset[0].length;
+
+            if (i % 200 == 0){
+                System.out.println("epoch:"+i+" ERROR:" + meanError);
+            }
+
+            if (meanError < accuracy) {
+                System.out.println("Final training! Epoch" + i);
+                break;
+            }
+        }
+    }
+
+    private double oneTry(double[][] dataset, double[] actual) {
+        double symError = 0;
+        for (int j = 0; j < dataset.length; j++) {
+            double[] data = dataset[j];
+            double result = perceptron.calculate(data);
+            double error = actual[j] - result;
+            symError += Math.abs(error);
+            perceptron.updateWeights(data, error, learningRate);
+        }
+        return symError;
+    }
 }

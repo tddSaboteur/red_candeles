@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
+import ru.ttd.saboteur.neiro.activation.SigmoidActivationFunctionImpl;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -25,12 +27,13 @@ public class PerceptronTrainerTest {
     @BeforeEach
     void before() {
         learningRate = 0.1;
-        epoch = 10_000_000;
+        epoch = 100;
         accuracy = 0.00001;
-        trainer = new PerceptronTrainer(learningRate,epoch,accuracy);
+        trainer = new PerceptronTrainer(learningRate, epoch, accuracy);
     }
+
     @Test
-    void train_mustRunAsManyProcessAsThereAreEpochs(){
+    void train_mustRunAsManyProcessAsThereAreEpochs() {
         double[][] dataset = {
                 {1, 1},
                 {1, 0},
@@ -39,80 +42,30 @@ public class PerceptronTrainerTest {
         };
 
         when(perceptron.calculate(any())).thenReturn(0.5);
-        doNothing().when(perceptron).updateWeights(any(),0.5,learningRate);
+        doNothing().when(perceptron).updateWeights(any(), eq(0.5), eq(learningRate));
 
         double[] actual = {1, 1, 1, 1};
-        trainer.train(perceptron, new DataSet(dataset,actual));
+        trainer.train(perceptron, new DataSet(dataset, actual));
 
-        verify(perceptron, times(epoch* dataset[0].length)).updateWeights(any(),any(),any());
-        verify(perceptron, times(epoch* dataset[0].length)).calculate(any());
+        verify(perceptron, times(epoch * actual.length)).updateWeights(any(), eq(0.5), eq(learningRate));
+        verify(perceptron, times(epoch * actual.length)).calculate(any());
 
     }
-
     @Test
-    void trainSpikeAnd() {
+    void train_whenAccuracyIsSufficient_mustFinishTrain(){
         double[][] dataset = {
                 {1, 1},
                 {1, 0},
                 {0, 1},
                 {0, 0}
         };
-        double[] actual = {1, 0, 0, 0};
-        perceptron.createSignal(dataset[0].length);
 
-        train(dataset, actual);
+        when(perceptron.calculate(any())).thenReturn(0.5,0.5,1.0);
+        doNothing().when(perceptron).updateWeights(any(), eq(0.5), eq(learningRate));
+        double[] actual = {1, 1, 1, 1};
+        trainer.train(perceptron, new DataSet(dataset, actual));
 
-        for (int i = 0; i < dataset.length; i++) {
-            double[] data = dataset[i];
-            System.out.println("index:" + i + " result:" + perceptron.calculate(data));
-        }
-    }
-    @Test
-    void trainSpikeOr(){
-        double[][] dataset = {
-                {1, 1},
-                {1, 0},
-                {0, 1},
-                {0, 0}
-        };
-        double[] actual = {1, 1, 1, 0};
-        perceptron.createSignal(dataset[0].length);
-
-        train(dataset, actual);
-
-        for (int i = 0; i < dataset.length; i++) {
-            double[] data = dataset[i];
-            System.out.println("index:" + i + " result:" + perceptron.calculate(data));
-        }
-
+        verify(perceptron, times(2 * actual.length)).updateWeights(any(), anyDouble(), eq(learningRate));
     }
 
-    private void train(double[][] dataset, double[] actual) {
-
-        for (int i = 0; i < epoch; i++) {
-
-            double meanError = oneTry(dataset, actual) / dataset[0].length;
-
-            if (i % 200 == 0){
-                System.out.println("epoch:"+i+" ERROR:" + meanError);
-            }
-
-            if (meanError < accuracy) {
-                System.out.println("Final training! Epoch" + i);
-                break;
-            }
-        }
-    }
-
-    private double oneTry(double[][] dataset, double[] actual) {
-        double symError = 0;
-        for (int j = 0; j < dataset.length; j++) {
-            double[] data = dataset[j];
-            double result = perceptron.calculate(data);
-            double error = actual[j] - result;
-            symError += Math.abs(error);
-            perceptron.updateWeights(data, error, learningRate);
-        }
-        return symError;
-    }
 }

@@ -7,8 +7,8 @@ public class LeakyReluActivationFunction implements ActivationFunction{
         return Math.max(0.001,input);
     }
     @Override
-    public double derivative(double WeightedSum) {
-        return WeightedSum > 0 ? 1.0 : 0.001;
+    public double derivative(double weightedSum) {
+        return weightedSum > 0 ? 1.0 : 0.001;
     }
 
 }

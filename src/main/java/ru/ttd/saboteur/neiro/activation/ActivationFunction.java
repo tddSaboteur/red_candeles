@@ -3,5 +3,5 @@ package ru.ttd.saboteur.neiro.activation;
 public interface ActivationFunction {
     double activate(double input);
 
-    double derivative(double WeightedSum);
+    double derivative(double weightedSum);
 }

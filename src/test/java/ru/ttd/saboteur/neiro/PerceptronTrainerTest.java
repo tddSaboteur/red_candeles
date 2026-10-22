@@ -3,31 +3,40 @@ package ru.ttd.saboteur.neiro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.ttd.saboteur.neiro.activation.ActivationFunction;
-import ru.ttd.saboteur.neiro.activation.LeakyReluActivationFunction;
-import ru.ttd.saboteur.neiro.activation.SigmoidActivationFunctionImpl;
 
 
 @ExtendWith(MockitoExtension.class)
-public class TeacherTest {
+public class PerceptronTrainerTest {
 
-    WeightGenerator weightGenerator = new WeightGenerator();
-    ActivationFunction activationFunction ;
 
     double learningRate;
     int epoch;
     double accuracy;
+    @Mock
     Perceptron perceptron;
+
+    PerceptronTrainer trainer;
 
     @BeforeEach
     void before() {
-        weightGenerator = new WeightGenerator();
-        activationFunction = new SigmoidActivationFunctionImpl();
         learningRate = 0.1;
         epoch = 10_000_000;
         accuracy = 0.00001;
-        perceptron = new Perceptron(weightGenerator, activationFunction);
+        trainer = new PerceptronTrainer(learningRate,epoch,accuracy);
+    }
+    @Test
+    void train_mustRunAsManyProcessAsThereAreEpochs(){
+        double[][] dataset = {
+                {1, 1},
+                {1, 0},
+                {0, 1},
+                {0, 0}
+        };
+
+        double[] actual = {1, 0, 0, 0};
+        trainer.train(perceptron, new DataSet(dataset,actual));
 
     }
 

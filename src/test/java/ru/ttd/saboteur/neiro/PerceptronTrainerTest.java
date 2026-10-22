@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 public class PerceptronTrainerTest {
@@ -35,8 +38,14 @@ public class PerceptronTrainerTest {
                 {0, 0}
         };
 
-        double[] actual = {1, 0, 0, 0};
+        when(perceptron.calculate(any())).thenReturn(0.5);
+        doNothing().when(perceptron).updateWeights(any(),0.5,learningRate);
+
+        double[] actual = {1, 1, 1, 1};
         trainer.train(perceptron, new DataSet(dataset,actual));
+
+        verify(perceptron, times(epoch* dataset[0].length)).updateWeights(any(),any(),any());
+        verify(perceptron, times(epoch* dataset[0].length)).calculate(any());
 
     }
 

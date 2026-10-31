@@ -18,7 +18,14 @@ public class PerceptronLayer {
         if (perceptrons == null){
             initPerceptronArray();
         }
-        return null;
+
+        double[] result = new double[perceptrons.length];
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = perceptrons[i].calculate(dataSet);
+        }
+
+        return result;
     }
 
     private void initPerceptronArray() {

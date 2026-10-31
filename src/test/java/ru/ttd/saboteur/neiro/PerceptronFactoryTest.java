@@ -8,7 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ttd.saboteur.neiro.activation.ActivationFunction;
 import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PerceptronFactoryTest {
@@ -30,5 +31,6 @@ public class PerceptronFactoryTest {
 
         Perceptron perceptron = perceptronFactory.createPerceptron();
         perceptron.calculate(dataset);
+        verify(activationFunction,times(1)).activate(anyDouble());
     }
 }

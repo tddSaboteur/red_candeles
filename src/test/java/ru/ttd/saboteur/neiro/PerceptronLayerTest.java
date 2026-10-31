@@ -3,33 +3,40 @@ package ru.ttd.saboteur.neiro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import ru.ttd.saboteur.neiro.activation.ActivationFunction;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class PerceptronLayerTest {
     PerceptronLayer perceptronLayer;
     int countPerceptron = 3;
-    int countSignal = 3;
     @Mock
-    ActivationFunction activationFunction;
+    PerceptronFactory perceptronFactory;
     @Mock
-    WeightGenerator weightGenerator;
+    Perceptron perceptron;
 
     @BeforeEach
     void before() {
-        perceptronLayer = new PerceptronLayer(countPerceptron, countSignal, activationFunction, weightGenerator);
+        perceptronLayer = new PerceptronLayer(countPerceptron, perceptronFactory);
     }
 
     @Test
-    @Disabled
     void calculateTest() {
         double[][] dataSet = {
             {1,1,1},
         };
-        double[] result = perceptronLayer.calculate(dataSet);
-        assertNotNull(result);
+        when(perceptronFactory.createPerceptron()).thenReturn(perceptron);
+        when(perceptron.calculate(any())).thenReturn(1.0);
 
+        double[] result = perceptronLayer.calculate(dataSet);
+
+        assertNotNull(result);
     }
 }

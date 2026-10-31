@@ -1,6 +1,5 @@
 package ru.ttd.saboteur.neiro;
 
-import ru.ttd.saboteur.neiro.activation.ActivationFunction;
 import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 
 public class PerceptronLayer {
@@ -26,7 +25,7 @@ public class PerceptronLayer {
         return result;
     }
 
-    public void updateWights(double[] dataSet, double[] error, double learningRate) {
+    public void updateWeights(double[] dataSet, double[] error, double learningRate) {
         initPerceptronArray();
         for (int i = 0; i < perceptrons.length; i++) {
             perceptrons[i].updateWeights(dataSet, error[i], learningRate);

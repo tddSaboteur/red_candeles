@@ -46,7 +46,7 @@ public class PerceptronLayerTest {
         double learningRate = 0.01;
         when(perceptronFactory.createPerceptron()).thenReturn(perceptron);
 
-        perceptronLayer.updateWights(dataSet,error, learningRate);
+        perceptronLayer.updateWeights(dataSet,error, learningRate);
         verify(perceptron).updateWeights(dataSet,error[0],learningRate);
         verify(perceptron).updateWeights(dataSet,error[1],learningRate);
         verify(perceptron).updateWeights(dataSet,error[2],learningRate);

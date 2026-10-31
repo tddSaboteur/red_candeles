@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
@@ -29,14 +30,14 @@ public class PerceptronLayerTest {
 
     @Test
     void calculateTest() {
-        double[][] dataSet = {
-            {1,1,1},
-        };
+        double[] dataSet = {1, 2, 1, 2, 1, 2};
+
         when(perceptronFactory.createPerceptron()).thenReturn(perceptron);
-        //when(perceptron.calculate(any())).thenReturn(1.0);
+        when(perceptron.calculate(dataSet)).thenReturn(1.0);
 
         double[] result = perceptronLayer.calculate(dataSet);
-        verify(perceptronFactory,times(countPerceptron)).createPerceptron();
-        //assertNotNull(result);
+        verify(perceptronFactory, times(countPerceptron)).createPerceptron();
+
+        assertArrayEquals(new double[]{1.0, 1.0, 1.0}, result);
     }
 }

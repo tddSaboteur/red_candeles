@@ -14,7 +14,7 @@ public class PerceptronLayer {
         this.perceptronFactory = perceptronFactory;
     }
 
-    public double[] calculate(double[][] dataSet) {
+    public double[] calculate(double[] dataSet) {
         if (perceptrons == null){
             initPerceptronArray();
         }

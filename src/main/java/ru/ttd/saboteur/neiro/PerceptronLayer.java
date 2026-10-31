@@ -15,9 +15,7 @@ public class PerceptronLayer {
     }
 
     public double[] calculate(double[] dataSet) {
-        if (perceptrons == null){
-            initPerceptronArray();
-        }
+        initPerceptronArray();
 
         double[] result = new double[perceptrons.length];
 
@@ -28,10 +26,19 @@ public class PerceptronLayer {
         return result;
     }
 
+    public void updateWights(double[] dataSet, double[] error, double learningRate) {
+        initPerceptronArray();
+        for (int i = 0; i < perceptrons.length; i++) {
+            perceptrons[i].updateWeights(dataSet, error[i], learningRate);
+        }
+    }
+
     private void initPerceptronArray() {
-        perceptrons = new Perceptron[countPerceptron];
-        for (int i = 0; i < countPerceptron; i++) {
-            perceptrons[i] = perceptronFactory.createPerceptron();
+        if(perceptrons == null) {
+            perceptrons = new Perceptron[countPerceptron];
+            for (int i = 0; i < countPerceptron; i++) {
+                perceptrons[i] = perceptronFactory.createPerceptron();
+            }
         }
     }
 }

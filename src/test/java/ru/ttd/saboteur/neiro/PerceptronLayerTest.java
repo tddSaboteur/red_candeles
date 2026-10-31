@@ -11,7 +11,7 @@ import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PerceptronLayerTest {
@@ -33,10 +33,10 @@ public class PerceptronLayerTest {
             {1,1,1},
         };
         when(perceptronFactory.createPerceptron()).thenReturn(perceptron);
-        when(perceptron.calculate(any())).thenReturn(1.0);
+        //when(perceptron.calculate(any())).thenReturn(1.0);
 
         double[] result = perceptronLayer.calculate(dataSet);
-
-        assertNotNull(result);
+        verify(perceptronFactory,times(countPerceptron)).createPerceptron();
+        //assertNotNull(result);
     }
 }

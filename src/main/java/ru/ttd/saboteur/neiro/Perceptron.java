@@ -1,7 +1,6 @@
 package ru.ttd.saboteur.neiro;
 
 import ru.ttd.saboteur.neiro.activation.ActivationFunction;
-import ru.ttd.saboteur.neiro.activation.ReluActivationFunction;
 
 public class Perceptron {
     private double[] weight;
@@ -14,7 +13,7 @@ public class Perceptron {
         this.activationFunction = activationFunction;
     }
 
-    public void createSignal(int countSignals) {
+    public void initWeights(int countSignals) {
         weight = new double[countSignals + 1];
         initWeight();
     }

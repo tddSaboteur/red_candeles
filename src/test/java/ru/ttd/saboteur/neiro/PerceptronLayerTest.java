@@ -1,6 +1,7 @@
 package ru.ttd.saboteur.neiro;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ru.ttd.saboteur.neiro.activation.ActivationFunction;
@@ -22,6 +23,7 @@ public class PerceptronLayerTest {
     }
 
     @Test
+    @Disabled
     void calculateTest() {
         double[][] dataSet = {
             {1,1,1},

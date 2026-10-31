@@ -1,7 +1,6 @@
 package ru.ttd.saboteur.neiro;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,7 +10,6 @@ import ru.ttd.saboteur.neiro.activation.PerceptronFactory;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +20,7 @@ public class PerceptronLayerTest {
     PerceptronFactory perceptronFactory;
     @Mock
     Perceptron perceptron;
+    double[] dataSet = {1, 2, 1, 2, 1, 2};
 
     @BeforeEach
     void before() {
@@ -30,7 +29,7 @@ public class PerceptronLayerTest {
 
     @Test
     void calculateTest() {
-        double[] dataSet = {1, 2, 1, 2, 1, 2};
+
 
         when(perceptronFactory.createPerceptron()).thenReturn(perceptron);
         when(perceptron.calculate(dataSet)).thenReturn(1.0);
@@ -39,5 +38,12 @@ public class PerceptronLayerTest {
         verify(perceptronFactory, times(countPerceptron)).createPerceptron();
 
         assertArrayEquals(new double[]{1.0, 1.0, 1.0}, result);
+    }
+
+    @Test
+    void updateWeights(){
+        double error = 1;
+        double learningRate = 0.01;
+        perceptronLayer.updateWights(dataSet,error, learningRate);
     }
 }

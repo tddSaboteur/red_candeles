@@ -11,14 +11,14 @@ public class PerceptronTrainer {
         this.learningRate = learningRate;
     }
 
-    public void train(Perceptron perceptron, DataSet dataset) {
+    public void train(PerceptronLayer perceptron, DataSet dataset) {
 
         for (int i = 0; i < epoch; i++) {
 
             double meanError = oneTry(dataset.inputs(), dataset.actual(), perceptron) / dataset.actual().length;
 
-            if (i % 200 == 0){
-                System.out.println("epoch:"+i+" ERROR:" + meanError);
+            if (i % 200 == 0) {
+                System.out.println("epoch:" + i + " ERROR:" + meanError);
             }
 
             if (meanError < accuracy) {
@@ -28,15 +28,31 @@ public class PerceptronTrainer {
         }
     }
 
-    private double oneTry(double[][] dataset, double[] actual, Perceptron perceptron) {
+    private double oneTry(double[][] dataset, double[][] actual, PerceptronLayer perceptron) {
         double symError = 0;
-        for (int j = 0; j < dataset.length; j++) {
-            double[] data = dataset[j];
-            double result = perceptron.calculate(data);
-            double error = actual[j] - result;
-            symError += Math.abs(error);
+        for (int i = 0; i < dataset.length; i++) {
+            double[] data = dataset[i];
+            double[] result = perceptron.calculate(data);
+            double[] error = calculateErrors(result, actual[i]);
+            symError += symError(error);
             perceptron.updateWeights(data, error, learningRate);
         }
         return symError;
+    }
+
+    private double symError(double[] errors) {
+        double errorSym = 0;
+        for (double error : errors) {
+            errorSym += Math.abs(error);
+        }
+        return errorSym;
+    }
+
+    private double[] calculateErrors(double[] calculated, double[] actual) {
+        double[] result = new double[actual.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = actual[i] - calculated[i];
+        }
+        return result;
     }
 }

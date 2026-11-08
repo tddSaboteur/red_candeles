@@ -42,7 +42,7 @@ public class PerceptronTest {
 
     @Test
     void createInputTest() {
-        perceptron.createSignal(COUNT_SIGNALS);
+        perceptron.initWeights(COUNT_SIGNALS);
         assertEquals(COUNT_SIGNALS + 1, perceptron.getWeights().length);
     }
 
@@ -51,7 +51,7 @@ public class PerceptronTest {
     void calculateTest(double[] inputs, double expected) {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
         when(activationFunction.activate(expected)).thenReturn(1.0);
-        perceptron.createSignal(2);
+        perceptron.initWeights(2);
 
         assertEquals(1, perceptron.calculate(inputs));
         verify(activationFunction, times(1)).activate(anyDouble());
@@ -60,7 +60,7 @@ public class PerceptronTest {
     @Test
     void initWeightRandomValue() {
         when(weightGenerator.getRandomValue()).thenReturn(1.0);
-        perceptron.createSignal(COUNT_SIGNALS);
+        perceptron.initWeights(COUNT_SIGNALS);
         verify(weightGenerator, times(COUNT_SIGNALS+1)).getRandomValue();
     }
 
@@ -92,7 +92,7 @@ public class PerceptronTest {
         when(weightGenerator.getRandomValue()).thenReturn(startBias,startWeight1, startWeight2);
         when(activationFunction.derivative(anyDouble())).thenReturn(deriv);
 
-        perceptron.createSignal(inputs.length);
+        perceptron.initWeights(inputs.length);
 
         perceptron.updateWeights(inputs, error, learningRate);
 
